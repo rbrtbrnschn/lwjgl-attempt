@@ -1,4 +1,4 @@
-import com.rbrtbrnschn.voxel2.core.{Color, Position}
+import com.rbrtbrnschn.voxel2.core.{Color, Position, Vertex}
 import org.lwjgl.glfw.GLFW._
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL11._
@@ -11,70 +11,120 @@ import org.joml.{Matrix4f, Vector3f}
 import org.lwjgl.BufferUtils
 
 object CubeDemo {
-  case class Vertex(pos: Vector3f, color: Vector3f)
-  val red = new Vector3f(1, 0, 0)
-  val green = new Vector3f(0, 1, 0)
-  val blue = new Vector3f(0, 0, 1)
-  val yellow = new Vector3f(1, 1, 0)
-  val cyan = new Vector3f(0, 1, 1)
-  val magenta = new Vector3f(1, 0, 1)
+
+//  val faces = Array(
+//    // front
+//    Array(
+//      Vertex(Position(-0.5f,-0.5f, 0.5f), red),
+//      Vertex(Position( 0.5f,-0.5f, 0.5f), red),
+//      Vertex(Position( 0.5f, 0.5f, 0.5f), red),
+//      Vertex(Position(-0.5f,-0.5f, 0.5f), red),
+//      Vertex(Position( 0.5f, 0.5f, 0.5f), red),
+//      Vertex(Position(-0.5f, 0.5f, 0.5f), red)
+//    ),
+//    // back
+//    Array(
+//      Vertex(Position(-0.5f,-0.5f,-0.5f), green),
+//      Vertex(Position( 0.5f,-0.5f,-0.5f), green),
+//      Vertex(Position( 0.5f, 0.5f,-0.5f), green),
+//      Vertex(Position(-0.5f,-0.5f,-0.5f), green),
+//      Vertex(Position( 0.5f, 0.5f,-0.5f), green),
+//      Vertex(Position(-0.5f, 0.5f,-0.5f), green)
+//    ),
+//    // left
+//    Array(
+//      Vertex(Position(-0.5f,-0.5f,-0.5f), blue),
+//      Vertex(Position(-0.5f,-0.5f, 0.5f), blue),
+//      Vertex(Position(-0.5f, 0.5f, 0.5f), blue),
+//      Vertex(Position(-0.5f,-0.5f,-0.5f), blue),
+//      Vertex(Position(-0.5f, 0.5f, 0.5f), blue),
+//      Vertex(Position(-0.5f, 0.5f,-0.5f), blue)
+//    ),
+//    // right
+//    Array(
+//      Vertex(Position(0.5f,-0.5f,-0.5f), yellow),
+//      Vertex(Position(0.5f,-0.5f, 0.5f), yellow),
+//      Vertex(Position(0.5f, 0.5f, 0.5f), yellow),
+//      Vertex(Position(0.5f,-0.5f,-0.5f), yellow),
+//      Vertex(Position(0.5f, 0.5f, 0.5f), yellow),
+//      Vertex(Position(0.5f, 0.5f,-0.5f), yellow)
+//    ),
+//    // top
+//    Array(
+//      Vertex(Position(-0.5f,0.5f,-0.5f), cyan),
+//      Vertex(Position(-0.5f,0.5f, 0.5f), cyan),
+//      Vertex(Position( 0.5f,0.5f, 0.5f), cyan),
+//      Vertex(Position(-0.5f,0.5f,-0.5f), cyan),
+//      Vertex(Position( 0.5f,0.5f, 0.5f), cyan),
+//      Vertex(Position( 0.5f,0.5f,-0.5f), cyan)
+//    ),
+//    // bottom
+//    Array(
+//      Vertex(Position(-0.5f,-0.5f,-0.5f), magenta),
+//      Vertex(Position(-0.5f,-0.5f, 0.5f), magenta),
+//      Vertex(Position( 0.5f,-0.5f, 0.5f), magenta),
+//      Vertex(Position(-0.5f,-0.5f,-0.5f), magenta),
+//      Vertex(Position( 0.5f,-0.5f, 0.5f), magenta),
+//      Vertex(Position( 0.5f,-0.5f,-0.5f), magenta)
+//    )
+//  )
+
   val faces = Array(
     // front
     Array(
-      Vertex(new Vector3f(-0.5f,-0.5f, 0.5f), red),
-      Vertex(new Vector3f( 0.5f,-0.5f, 0.5f), red),
-      Vertex(new Vector3f( 0.5f, 0.5f, 0.5f), red),
-      Vertex(new Vector3f(-0.5f,-0.5f, 0.5f), red),
-      Vertex(new Vector3f( 0.5f, 0.5f, 0.5f), red),
-      Vertex(new Vector3f(-0.5f, 0.5f, 0.5f), red)
+      Vertex(Position(-0.5f,-0.5f, 0.5f), Color.red),
+      Vertex(Position( 0.5f,-0.5f, 0.5f), Color.red),
+      Vertex(Position( 0.5f, 0.5f, 0.5f), Color.red),
+      Vertex(Position(-0.5f,-0.5f, 0.5f), Color.red),
+      Vertex(Position( 0.5f, 0.5f, 0.5f), Color.red),
+      Vertex(Position(-0.5f, 0.5f, 0.5f), Color.red)
     ),
     // back
     Array(
-      Vertex(new Vector3f(-0.5f,-0.5f,-0.5f), green),
-      Vertex(new Vector3f( 0.5f,-0.5f,-0.5f), green),
-      Vertex(new Vector3f( 0.5f, 0.5f,-0.5f), green),
-      Vertex(new Vector3f(-0.5f,-0.5f,-0.5f), green),
-      Vertex(new Vector3f( 0.5f, 0.5f,-0.5f), green),
-      Vertex(new Vector3f(-0.5f, 0.5f,-0.5f), green)
+      Vertex(Position(-0.5f,-0.5f,-0.5f), Color.green),
+      Vertex(Position( 0.5f,-0.5f,-0.5f), Color.green),
+      Vertex(Position( 0.5f, 0.5f,-0.5f), Color.green),
+      Vertex(Position(-0.5f,-0.5f,-0.5f), Color.green),
+      Vertex(Position( 0.5f, 0.5f,-0.5f), Color.green),
+      Vertex(Position(-0.5f, 0.5f,-0.5f), Color.green)
     ),
     // left
     Array(
-      Vertex(new Vector3f(-0.5f,-0.5f,-0.5f), blue),
-      Vertex(new Vector3f(-0.5f,-0.5f, 0.5f), blue),
-      Vertex(new Vector3f(-0.5f, 0.5f, 0.5f), blue),
-      Vertex(new Vector3f(-0.5f,-0.5f,-0.5f), blue),
-      Vertex(new Vector3f(-0.5f, 0.5f, 0.5f), blue),
-      Vertex(new Vector3f(-0.5f, 0.5f,-0.5f), blue)
+      Vertex(Position(-0.5f,-0.5f,-0.5f), Color.blue),
+      Vertex(Position(-0.5f,-0.5f, 0.5f), Color.blue),
+      Vertex(Position(-0.5f, 0.5f, 0.5f), Color.blue),
+      Vertex(Position(-0.5f,-0.5f,-0.5f), Color.blue),
+      Vertex(Position(-0.5f, 0.5f, 0.5f), Color.blue),
+      Vertex(Position(-0.5f, 0.5f,-0.5f), Color.blue)
     ),
     // right
     Array(
-      Vertex(new Vector3f(0.5f,-0.5f,-0.5f), yellow),
-      Vertex(new Vector3f(0.5f,-0.5f, 0.5f), yellow),
-      Vertex(new Vector3f(0.5f, 0.5f, 0.5f), yellow),
-      Vertex(new Vector3f(0.5f,-0.5f,-0.5f), yellow),
-      Vertex(new Vector3f(0.5f, 0.5f, 0.5f), yellow),
-      Vertex(new Vector3f(0.5f, 0.5f,-0.5f), yellow)
+      Vertex(Position(0.5f,-0.5f,-0.5f), Color.yellow),
+      Vertex(Position(0.5f,-0.5f, 0.5f), Color.yellow),
+      Vertex(Position(0.5f, 0.5f, 0.5f), Color.yellow),
+      Vertex(Position(0.5f,-0.5f,-0.5f), Color.yellow),
+      Vertex(Position(0.5f, 0.5f, 0.5f), Color.yellow),
+      Vertex(Position(0.5f, 0.5f,-0.5f), Color.yellow)
     ),
     // top
     Array(
-      Vertex(new Vector3f(-0.5f,0.5f,-0.5f), cyan),
-      Vertex(new Vector3f(-0.5f,0.5f, 0.5f), cyan),
-      Vertex(new Vector3f( 0.5f,0.5f, 0.5f), cyan),
-      Vertex(new Vector3f(-0.5f,0.5f,-0.5f), cyan),
-      Vertex(new Vector3f( 0.5f,0.5f, 0.5f), cyan),
-      Vertex(new Vector3f( 0.5f,0.5f,-0.5f), cyan)
+      Vertex(Position(-0.5f,0.5f,-0.5f), Color.cyan),
+      Vertex(Position(-0.5f,0.5f, 0.5f), Color.cyan),
+      Vertex(Position( 0.5f,0.5f, 0.5f), Color.cyan),
+      Vertex(Position(-0.5f,0.5f,-0.5f), Color.cyan),
+      Vertex(Position( 0.5f,0.5f, 0.5f), Color.cyan),
+      Vertex(Position( 0.5f,0.5f,-0.5f), Color.cyan)
     ),
     // bottom
     Array(
-      Vertex(new Vector3f(-0.5f,-0.5f,-0.5f), magenta),
-      Vertex(new Vector3f(-0.5f,-0.5f, 0.5f), magenta),
-      Vertex(new Vector3f( 0.5f,-0.5f, 0.5f), magenta),
-      Vertex(new Vector3f(-0.5f,-0.5f,-0.5f), magenta),
-      Vertex(new Vector3f( 0.5f,-0.5f, 0.5f), magenta),
-      Vertex(new Vector3f( 0.5f,-0.5f,-0.5f), magenta)
+      Vertex(Position(-0.5f,-0.5f,-0.5f), Color.magenta),
+      Vertex(Position(-0.5f,-0.5f, 0.5f), Color.magenta),
+      Vertex(Position( 0.5f,-0.5f, 0.5f), Color.magenta),
+      Vertex(Position(-0.5f,-0.5f,-0.5f), Color.magenta),
+      Vertex(Position( 0.5f,-0.5f, 0.5f), Color.magenta),
+      Vertex(Position( 0.5f,-0.5f,-0.5f), Color.magenta)
     )
   )
-
 
 
   class Mesh(val vertices: Array[Vertex], val indices: Array[Int]) {
@@ -84,8 +134,8 @@ object CubeDemo {
     // Create two VBOs
 
     // Flatten all positions and colors
-    val cubeVerticesPositions = vertices.flatMap(v => Array(v.pos.x, v.pos.y, v.pos.z))
-    val cubeVerticesColors    = vertices.flatMap(v => Array(v.color.x, v.color.y, v.color.z))
+    val cubeVerticesPositions = vertices.flatMap(v => Array(v.position.x, v.position.y, v.position.z))
+    val cubeVerticesColors    = vertices.flatMap(v => Array(v.color.r, v.color.g, v.color.b))
 
     val vboPos = glGenBuffers()
     glBindBuffer(GL_ARRAY_BUFFER, vboPos)
@@ -199,8 +249,8 @@ object CubeDemo {
   // Cube definition
   def createCube(x: Int, y: Int, z: Int): Mesh = {
     val verts = faces.flatten.map { vertex =>
-      val newPos = new Vector3f(vertex.pos).add(x, y, z)
-      vertex.copy(pos = newPos)
+      val newPos = new Vector3f(vertex.position.toVector3f).add(x, y, z)
+      vertex.copy(position = Position(newPos.x, newPos.y, newPos.z))
     }
     val indices = (0 until verts.length).toArray
     new Mesh(verts, indices)
