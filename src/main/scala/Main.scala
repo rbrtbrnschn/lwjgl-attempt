@@ -1,3 +1,4 @@
+import com.rbrtbrnschn.voxel2.core.{Color, Position}
 import org.lwjgl.glfw.GLFW._
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL11._
@@ -10,13 +11,13 @@ import org.joml.{Matrix4f, Vector3f}
 import org.lwjgl.BufferUtils
 
 object CubeDemo {
+  case class Vertex(pos: Vector3f, color: Vector3f)
   val red = new Vector3f(1, 0, 0)
   val green = new Vector3f(0, 1, 0)
   val blue = new Vector3f(0, 0, 1)
   val yellow = new Vector3f(1, 1, 0)
   val cyan = new Vector3f(0, 1, 1)
   val magenta = new Vector3f(1, 0, 1)
-
   val faces = Array(
     // front
     Array(
@@ -75,7 +76,6 @@ object CubeDemo {
   )
 
 
-  case class Vertex(pos: Vector3f, color: Vector3f)
 
   class Mesh(val vertices: Array[Vertex], val indices: Array[Int]) {
     val vao: Int = glGenVertexArrays()
@@ -197,8 +197,11 @@ object CubeDemo {
       |""".stripMargin
 
   // Cube definition
-  def createCube(): Mesh = {
-    val verts = faces.flatten
+  def createCube(x: Int, y: Int, z: Int): Mesh = {
+    val verts = faces.flatten.map { vertex =>
+      val newPos = new Vector3f(vertex.pos).add(x, y, z)
+      vertex.copy(pos = newPos)
+    }
     val indices = (0 until verts.length).toArray
     new Mesh(verts, indices)
   }
@@ -223,7 +226,13 @@ object CubeDemo {
     val program = linkProgram(vs, fs)
     val uMVP = glGetUniformLocation(program, "uMVP")
 
-    val cube = createCube()
+    val cubes = (0 to 15).flatMap(x => {
+      (0 to 15).flatMap(y => {
+        (0 to 15).map(z => {
+          createCube(x,y,z)
+        })
+      })
+    })
 
     var lastX = width / 2.0
     var lastY = height / 2.0
@@ -265,8 +274,10 @@ object CubeDemo {
       // change face colors
       for(i <- 0 until 6) {
         if(glfwGetKey(window, GLFW_KEY_1 + i) == GLFW_PRESS) {
-          println(s"pressed $i")
-          cube.updateFaceColor(faceIndex = i, r = Math.random().toFloat, g = Math.random().toFloat, b = Math.random().toFloat)
+          val r = Math.random().toFloat
+          val g = Math.random().toFloat
+          val b = Math.random().toFloat
+          cubes.foreach(c => c.updateFaceColor(faceIndex = i, r = r, g = g, b = b))
         }
       }
 
@@ -283,7 +294,7 @@ object CubeDemo {
       glUniformMatrix4fv(uMVP, false, fb)
       stack.pop()
 
-      cube.draw()
+      cubes.foreach(_.draw())
 
       glfwSwapBuffers(window)
       glfwPollEvents()
