@@ -1,4 +1,4 @@
-package com.rbrtbrnschn.voxel2.core
+package com.rbrtbrnschn.voxel2.core.glsl
 
 import org.joml.Vector3f
 

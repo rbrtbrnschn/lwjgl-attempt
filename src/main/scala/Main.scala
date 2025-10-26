@@ -1,4 +1,5 @@
-import com.rbrtbrnschn.voxel2.core.{Color, Position, Vertex}
+import com.rbrtbrnschn.voxel2.core.Block
+import com.rbrtbrnschn.voxel2.core.glsl.{Color, GLSLShaders, Mesh, Position, Vertex}
 import org.lwjgl.glfw.GLFW._
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL11._
@@ -11,197 +12,6 @@ import org.joml.{Matrix4f, Vector3f}
 import org.lwjgl.BufferUtils
 
 object CubeDemo {
-
-//  val faces = Array(
-//    // front
-//    Array(
-//      Vertex(Position(-0.5f,-0.5f, 0.5f), red),
-//      Vertex(Position( 0.5f,-0.5f, 0.5f), red),
-//      Vertex(Position( 0.5f, 0.5f, 0.5f), red),
-//      Vertex(Position(-0.5f,-0.5f, 0.5f), red),
-//      Vertex(Position( 0.5f, 0.5f, 0.5f), red),
-//      Vertex(Position(-0.5f, 0.5f, 0.5f), red)
-//    ),
-//    // back
-//    Array(
-//      Vertex(Position(-0.5f,-0.5f,-0.5f), green),
-//      Vertex(Position( 0.5f,-0.5f,-0.5f), green),
-//      Vertex(Position( 0.5f, 0.5f,-0.5f), green),
-//      Vertex(Position(-0.5f,-0.5f,-0.5f), green),
-//      Vertex(Position( 0.5f, 0.5f,-0.5f), green),
-//      Vertex(Position(-0.5f, 0.5f,-0.5f), green)
-//    ),
-//    // left
-//    Array(
-//      Vertex(Position(-0.5f,-0.5f,-0.5f), blue),
-//      Vertex(Position(-0.5f,-0.5f, 0.5f), blue),
-//      Vertex(Position(-0.5f, 0.5f, 0.5f), blue),
-//      Vertex(Position(-0.5f,-0.5f,-0.5f), blue),
-//      Vertex(Position(-0.5f, 0.5f, 0.5f), blue),
-//      Vertex(Position(-0.5f, 0.5f,-0.5f), blue)
-//    ),
-//    // right
-//    Array(
-//      Vertex(Position(0.5f,-0.5f,-0.5f), yellow),
-//      Vertex(Position(0.5f,-0.5f, 0.5f), yellow),
-//      Vertex(Position(0.5f, 0.5f, 0.5f), yellow),
-//      Vertex(Position(0.5f,-0.5f,-0.5f), yellow),
-//      Vertex(Position(0.5f, 0.5f, 0.5f), yellow),
-//      Vertex(Position(0.5f, 0.5f,-0.5f), yellow)
-//    ),
-//    // top
-//    Array(
-//      Vertex(Position(-0.5f,0.5f,-0.5f), cyan),
-//      Vertex(Position(-0.5f,0.5f, 0.5f), cyan),
-//      Vertex(Position( 0.5f,0.5f, 0.5f), cyan),
-//      Vertex(Position(-0.5f,0.5f,-0.5f), cyan),
-//      Vertex(Position( 0.5f,0.5f, 0.5f), cyan),
-//      Vertex(Position( 0.5f,0.5f,-0.5f), cyan)
-//    ),
-//    // bottom
-//    Array(
-//      Vertex(Position(-0.5f,-0.5f,-0.5f), magenta),
-//      Vertex(Position(-0.5f,-0.5f, 0.5f), magenta),
-//      Vertex(Position( 0.5f,-0.5f, 0.5f), magenta),
-//      Vertex(Position(-0.5f,-0.5f,-0.5f), magenta),
-//      Vertex(Position( 0.5f,-0.5f, 0.5f), magenta),
-//      Vertex(Position( 0.5f,-0.5f,-0.5f), magenta)
-//    )
-//  )
-
-  val faces = Array(
-    // front
-    Array(
-      Vertex(Position(-0.5f,-0.5f, 0.5f), Color.red),
-      Vertex(Position( 0.5f,-0.5f, 0.5f), Color.red),
-      Vertex(Position( 0.5f, 0.5f, 0.5f), Color.red),
-      Vertex(Position(-0.5f,-0.5f, 0.5f), Color.red),
-      Vertex(Position( 0.5f, 0.5f, 0.5f), Color.red),
-      Vertex(Position(-0.5f, 0.5f, 0.5f), Color.red)
-    ),
-    // back
-    Array(
-      Vertex(Position(-0.5f,-0.5f,-0.5f), Color.green),
-      Vertex(Position( 0.5f,-0.5f,-0.5f), Color.green),
-      Vertex(Position( 0.5f, 0.5f,-0.5f), Color.green),
-      Vertex(Position(-0.5f,-0.5f,-0.5f), Color.green),
-      Vertex(Position( 0.5f, 0.5f,-0.5f), Color.green),
-      Vertex(Position(-0.5f, 0.5f,-0.5f), Color.green)
-    ),
-    // left
-    Array(
-      Vertex(Position(-0.5f,-0.5f,-0.5f), Color.blue),
-      Vertex(Position(-0.5f,-0.5f, 0.5f), Color.blue),
-      Vertex(Position(-0.5f, 0.5f, 0.5f), Color.blue),
-      Vertex(Position(-0.5f,-0.5f,-0.5f), Color.blue),
-      Vertex(Position(-0.5f, 0.5f, 0.5f), Color.blue),
-      Vertex(Position(-0.5f, 0.5f,-0.5f), Color.blue)
-    ),
-    // right
-    Array(
-      Vertex(Position(0.5f,-0.5f,-0.5f), Color.yellow),
-      Vertex(Position(0.5f,-0.5f, 0.5f), Color.yellow),
-      Vertex(Position(0.5f, 0.5f, 0.5f), Color.yellow),
-      Vertex(Position(0.5f,-0.5f,-0.5f), Color.yellow),
-      Vertex(Position(0.5f, 0.5f, 0.5f), Color.yellow),
-      Vertex(Position(0.5f, 0.5f,-0.5f), Color.yellow)
-    ),
-    // top
-    Array(
-      Vertex(Position(-0.5f,0.5f,-0.5f), Color.cyan),
-      Vertex(Position(-0.5f,0.5f, 0.5f), Color.cyan),
-      Vertex(Position( 0.5f,0.5f, 0.5f), Color.cyan),
-      Vertex(Position(-0.5f,0.5f,-0.5f), Color.cyan),
-      Vertex(Position( 0.5f,0.5f, 0.5f), Color.cyan),
-      Vertex(Position( 0.5f,0.5f,-0.5f), Color.cyan)
-    ),
-    // bottom
-    Array(
-      Vertex(Position(-0.5f,-0.5f,-0.5f), Color.magenta),
-      Vertex(Position(-0.5f,-0.5f, 0.5f), Color.magenta),
-      Vertex(Position( 0.5f,-0.5f, 0.5f), Color.magenta),
-      Vertex(Position(-0.5f,-0.5f,-0.5f), Color.magenta),
-      Vertex(Position( 0.5f,-0.5f, 0.5f), Color.magenta),
-      Vertex(Position( 0.5f,-0.5f,-0.5f), Color.magenta)
-    )
-  )
-
-
-  class Mesh(val vertices: Array[Vertex], val indices: Array[Int]) {
-    val vao: Int = glGenVertexArrays()
-    val vbo: Int = glGenBuffers()
-    val ebo: Int = glGenBuffers()
-    // Create two VBOs
-
-    // Flatten all positions and colors
-    val cubeVerticesPositions = vertices.flatMap(v => Array(v.position.x, v.position.y, v.position.z))
-    val cubeVerticesColors    = vertices.flatMap(v => Array(v.color.r, v.color.g, v.color.b))
-
-    val vboPos = glGenBuffers()
-    glBindBuffer(GL_ARRAY_BUFFER, vboPos)
-    glBufferData(GL_ARRAY_BUFFER, cubeVerticesPositions, GL_STATIC_DRAW)
-
-    val vboColor = glGenBuffers()
-    glBindBuffer(GL_ARRAY_BUFFER, vboColor)
-    glBufferData(GL_ARRAY_BUFFER, cubeVerticesColors, GL_DYNAMIC_DRAW)
-
-    glBindVertexArray(vao)
-
-
-    glBindVertexArray(vao)
-
-    // Position VBO
-    glBindBuffer(GL_ARRAY_BUFFER, vboPos)
-    glEnableVertexAttribArray(0)
-    glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0)
-
-    // Color VBO
-    glBindBuffer(GL_ARRAY_BUFFER, vboColor)
-    glEnableVertexAttribArray(1)
-    glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0)
-
-    // EBO
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo)
-
-    glBindVertexArray(0)
-
-    val idxBuffer = BufferUtils.createIntBuffer(indices.length)
-    idxBuffer.put(indices).flip()
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo)
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, idxBuffer, GL_STATIC_DRAW)
-
-    // position attribute
-    glEnableVertexAttribArray(0)
-    glVertexAttribPointer(0, 3, GL_FLOAT, false, 6 * java.lang.Float.BYTES, 0)
-    // color attribute
-    glEnableVertexAttribArray(1)
-    glVertexAttribPointer(1, 3, GL_FLOAT, false, 6 * java.lang.Float.BYTES, 3 * java.lang.Float.BYTES)
-
-    glBindVertexArray(0)
-
-    // update a face's color
-    def updateFaceColor(faceIndex: Int, r: Float, g: Float, b: Float): Unit = {
-      val verticesPerFace = 6
-      val newColors = Array.fill(verticesPerFace*3)(0f)
-
-      for(i <- 0 until verticesPerFace) {
-        newColors(i*3 + 0) = r
-        newColors(i*3 + 1) = g
-        newColors(i*3 + 2) = b
-      }
-
-      val offset = faceIndex * verticesPerFace * 3 * 4 // 3 floats per vertex × 4 bytes
-      glBindBuffer(GL_ARRAY_BUFFER, vboColor)
-      glBufferSubData(GL_ARRAY_BUFFER, offset, newColors)
-    }
-
-    def draw(): Unit = {
-      glBindVertexArray(vao)
-      glDrawElements(GL_TRIANGLES, indices.length, GL_UNSIGNED_INT, 0)
-      glBindVertexArray(0)
-    }
-  }
-
   def compileShader(typeId: Int, src: String): Int = {
     val shader = glCreateShader(typeId)
     glShaderSource(shader, src)
@@ -225,35 +35,14 @@ object CubeDemo {
     program
   }
 
-  val vertexShaderSrc =
-    """#version 330 core
-      |layout(location=0) in vec3 aPos;
-      |layout(location=1) in vec3 aColor;
-      |out vec3 vColor;
-      |uniform mat4 uMVP;
-      |void main() {
-      |  gl_Position = uMVP * vec4(aPos, 1.0);
-      |  vColor = aColor;
-      |}
-      |""".stripMargin
-
-  val fragmentShaderSrc =
-    """#version 330 core
-      |in vec3 vColor;
-      |out vec4 FragColor;
-      |void main() {
-      |  FragColor = vec4(vColor, 1.0);
-      |}
-      |""".stripMargin
 
   // Cube definition
-  def createCube(x: Int, y: Int, z: Int): Mesh = {
-    val verts = faces.flatten.map { vertex =>
+  def createCube(block: Block, x: Int, y: Int, z: Int): Mesh = {
+    val verts = block.faces.flatten.map { vertex =>
       val newPos = new Vector3f(vertex.position.toVector3f).add(x, y, z)
       vertex.copy(position = Position(newPos.x, newPos.y, newPos.z))
     }
-    val indices = (0 until verts.length).toArray
-    new Mesh(verts, indices)
+    new Mesh(verts)
   }
 
   def main(args: Array[String]): Unit = {
@@ -271,15 +60,16 @@ object CubeDemo {
     GL.createCapabilities()
     glEnable(GL_DEPTH_TEST)
 
-    val vs = compileShader(GL_VERTEX_SHADER, vertexShaderSrc)
-    val fs = compileShader(GL_FRAGMENT_SHADER, fragmentShaderSrc)
+    val vs = compileShader(GL_VERTEX_SHADER, GLSLShaders.vertexShaderSrc)
+    val fs = compileShader(GL_FRAGMENT_SHADER, GLSLShaders.fragmentShaderSrc)
     val program = linkProgram(vs, fs)
     val uMVP = glGetUniformLocation(program, "uMVP")
 
+    // Create a chunk of grass
     val cubes = (0 to 15).flatMap(x => {
       (0 to 15).flatMap(y => {
         (0 to 15).map(z => {
-          createCube(x,y,z)
+          createCube(Block.grass,x,y,z)
         })
       })
     })
@@ -324,9 +114,7 @@ object CubeDemo {
       // change face colors
       for(i <- 0 until 6) {
         if(glfwGetKey(window, GLFW_KEY_1 + i) == GLFW_PRESS) {
-          val r = Math.random().toFloat
-          val g = Math.random().toFloat
-          val b = Math.random().toFloat
+          val List(r,g,b) = (0 to 2).toList.map(_ => Math.random().toFloat)
           cubes.foreach(c => c.updateFaceColor(faceIndex = i, r = r, g = g, b = b))
         }
       }
