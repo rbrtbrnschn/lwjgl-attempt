@@ -1,4 +1,4 @@
-import com.rbrtbrnschn.voxel2.core.Block
+import com.rbrtbrnschn.voxel2.core.{Block, ChunkGenerator}
 import com.rbrtbrnschn.voxel2.core.glsl.{Color, GLSLShaders, Mesh, Position, Vertex}
 import org.lwjgl.glfw.GLFW._
 import org.lwjgl.opengl.GL
@@ -65,14 +65,15 @@ object CubeDemo {
     val program = linkProgram(vs, fs)
     val uMVP = glGetUniformLocation(program, "uMVP")
 
-    // Create a chunk of grass
-    val cubes = (0 to 15).flatMap(x => {
-      (0 to 15).flatMap(y => {
-        (0 to 15).map(z => {
-          createCube(Block.grass,x,y,z)
-        })
-      })
-    })
+//    // Create a chunk of grass
+//    val cubes = (0 to 15).flatMap(x => {
+//      (0 to 15).flatMap(y => {
+//        (0 to 15).map(z => {
+//          createCube(Block.grass,x,y,z)
+//        })
+//      })
+//    })
+    var cubes: List[Mesh] = List.empty
 
     var lastX = width / 2.0
     var lastY = height / 2.0
@@ -114,9 +115,12 @@ object CubeDemo {
       // change face colors
       for(i <- 0 until 6) {
         if(glfwGetKey(window, GLFW_KEY_1 + i) == GLFW_PRESS) {
-          val List(r,g,b) = (0 to 2).toList.map(_ => Math.random().toFloat)
-          cubes.foreach(c => c.updateFaceColor(faceIndex = i, r = r, g = g, b = b))
+//          val List(r,g,b) = (0 to 2).toList.map(_ => Math.random().toFloat)
+//          cubes.foreach(c => c.updateFaceColor(faceIndex = i, r = r, g = g, b = b))
         }
+      }
+      if(glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
+        cubes = cubes ++ ChunkGenerator.generate(Block.grass)
       }
 
       // MVP
