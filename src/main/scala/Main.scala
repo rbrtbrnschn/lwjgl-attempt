@@ -100,7 +100,21 @@ object CubeDemo {
       ).normalize()
     })
 
+    val camera = new Camera(new Vector3f(0, 0, 3))
+
+    var lastFrame = 0.0f
+    glfwSetCursorPosCallback(window, (win: Long, xpos: Double, ypos: Double) => {
+      camera.processMouse(xpos, ypos)
+    })
+
     while (!glfwWindowShouldClose(window)) {
+      val currentFrame = glfwGetTime().toFloat
+      val deltaTime = currentFrame - lastFrame
+      lastFrame = currentFrame
+
+      glfwPollEvents()
+      camera.processKeyboard(window, deltaTime)
+
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
       glClearColor(0.1f, 0.2f, 0.4f, 1.0f)
 
@@ -125,7 +139,7 @@ object CubeDemo {
 
       // MVP
       val proj = new Matrix4f().perspective(Math.toRadians(60).toFloat, width.toFloat/height, 0.1f, 100f)
-      val view = new Matrix4f().lookAt(cameraPos, new Vector3f(cameraPos).add(cameraFront), cameraUp)
+      val view = camera.getViewMatrix()
       val model = new Matrix4f()
       val mvp = proj.mul(view, new Matrix4f()).mul(model)
 
